@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCIQUEST</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{primary:'#FF6B35',secondary:'#4ECDC4'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}};
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+body {
+font-family: 'Quicksand', sans-serif;
+background-color: #F9F9FF;
+max-width: 375px;
+margin: 0 auto;
+min-height: 100vh;
+position: relative;
+}
+.welcome-bg {
+background: linear-gradient(135deg, rgba(255,107,53,0.1) 0%, rgba(78,205,196,0.1) 100%);
+}
+.floating-animation {
+animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+0% { transform: translateY(0px); }
+50% { transform: translateY(-10px); }
+100% { transform: translateY(0px); }
+}
+.login-modal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+z-index: 1000;
+}
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 375px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style> <!-- ✅ Add this line -->
+
+</style>
+</head>
+<body>
+<!-- Welcome Page -->
+<div id="welcomePage" class="min-h-screen welcome-bg flex flex-col items-center justify-center px-6 py-12">
+<div class="text-center mb-8">
+<h1 class="text-3xl font-['Pacifico'] text-primary mb-1">SciQuest</h1>
+<p class="text-sm text-gray-600">Learn & Play Science</p>
+</div>
+<div class="w-full max-w-xs mb-12">
+<img src="https://readdy.ai/api/search-image?query=cute%20cartoon%20kids%20learning%20science%2C%20educational%20illustration%2C%20vibrant%20colors%2C%20digital%20art%2C%20playful%20scene%20with%20microscope%20and%20chemistry%20elements%2C%20child-friendly%20design%2C%20transparent%20background&width=300&height=300&seq=welcome1&orientation=squarish"
+alt="Welcome Illustration"
+class="w-full h-auto floating-animation">
+</div>
+<div class="space-y-4 w-full max-w-xs">
+<button id="loginBtn" class="w-full bg-primary text-white py-3 rounded-button font-medium shadow-lg hover:bg-opacity-90 transition-colors">
+Login
+</button>
+<button id="guestBtn" class="w-full bg-white text-primary py-3 rounded-button font-medium shadow-md hover:bg-gray-50 transition-colors">
+Continue as Guest
+</button>
+</div>
+</div>
+<!-- Login Modal -->
+<div id="loginModal" class="login-modal">
+<div class="modal-content">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-2xl font-bold text-gray-800">Login</h2>
+<button id="closeModal" class="text-gray-500 hover:text-gray-700">
+<i class="ri-close-line ri-lg"></i>
+</button>
+</div>
+<form id="loginForm" class="space-y-4">
+<div>
+<label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+<input type="text" id="username" name="username" required
+class="w-full px-4 py-2 rounded-button border border-gray-200 focus:border-primary focus:outline-none"
+placeholder="Enter your username">
+</div>
+<div>
+<label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+<input type="password" id="password" name="password" required
+class="w-full px-4 py-2 rounded-button border border-gray-200 focus:border-primary focus:outline-none"
+placeholder="Enter your password">
+</div>
+<button type="submit" class="w-full bg-primary text-white py-3 rounded-button font-medium shadow-lg hover:bg-opacity-90 transition-colors">
+Login
+</button>
+</form>
+</div>
+</div>
+<!-- Main App Content -->
+<div id="mainContent" class="hidden">
+<!-- Your existing main content here -->
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+const welcomePage = document.getElementById('welcomePage');
+const mainContent = document.getElementById('mainContent');
+const loginModal = document.getElementById('loginModal');
+const loginBtn = document.getElementById('loginBtn');
+const guestBtn = document.getElementById('guestBtn');
+const closeModal = document.getElementById('closeModal');
+const loginForm = document.getElementById('loginForm');
+// Show login modal
+loginBtn.addEventListener('click', () => {
+loginModal.style.display = 'block';
+});
+// Close login modal
+closeModal.addEventListener('click', () => {
+loginModal.style.display = 'none';
+});
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
+if (e.target === loginModal) {
+loginModal.style.display = 'none';
+}
+});
+// Handle login form submission
+loginForm.addEventListener('submit', (e) => {
+e.preventDefault();
+const username = document.getElementById('username').value;
+const password = document.getElementById('password').value;
+// Here you would typically validate credentials with a backend
+// For demo purposes, we'll use a simple check
+if (username && password) {
+loginModal.style.display = 'none';
+welcomePage.style.display = 'none';
+mainContent.classList.remove('hidden');
+// Store login state
+localStorage.setItem('isLoggedIn', 'true');
+localStorage.setItem('username', username);
+}
+});
+// Handle guest login
+guestBtn.addEventListener('click', () => {
+welcomePage.style.display = 'none';
+mainContent.classList.remove('hidden');
+localStorage.setItem('isLoggedIn', 'true');
+localStorage.setItem('username', 'Guest');
+});
+// Check if user is already logged in
+if (localStorage.getItem('isLoggedIn') === 'true') {
+welcomePage.style.display = 'none';
+mainContent.classList.remove('hidden');
+}
+});
+</script>
+<style>
+body {
+font-family: 'Quicksand', sans-serif;
+background-color: #F9F9FF;
+max-width: 375px;
+margin: 0 auto;
+min-height: 100vh;
+position: relative;
+}
+.progress-ring {
+transform: rotate(-90deg);
+}
+.progress-ring-circle {
+stroke-dasharray: 283;
+transition: stroke-dashoffset 0.5s;
+}
+.badge-glow {
+animation: glow 2s infinite alternate;
+}
+@keyframes glow {
+from {
+box-shadow: 0 0 5px -5px rgba(255, 107, 53, 0.5);
+}
+to {
+box-shadow: 0 0 10px 5px rgba(255, 107, 53, 0.5);
+}
+}
+.card-shadow {
+box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+}
+.avatar-border {
+box-shadow: 0 0 0 3px #FFF, 0 0 0 6px #FF6B35;
+}
+</style>
+</head>
+<body>
+<!-- Header Section -->
+<header class="fixed top-0 w-full bg-white z-10 px-4 py-3 flex items-center justify-between shadow-sm">
+<div class="w-10 h-10 flex items-center justify-center">
+<i class="ri-menu-line text-gray-700 ri-lg"></i>
+</div>
+<h1 class="text-xl font-['Pacifico'] text-primary">SciQuest</h1>
+<div class="w-10 h-10 flex items-center justify-center relative">
+<img src="https://readdy.ai/api/search-image?query=cute%20cartoon%20avatar%20of%20a%20smiling%20child%20with%20brown%20hair%2C%20digital%20art%20style%2C%20friendly%20appearance%2C%20colorful%2C%20isolated%20on%20transparent%20background&width=100&height=100&seq=avatar1&orientation=squarish"
+alt="Profile"
+class="w-10 h-10 rounded-full object-cover avatar-border cursor-pointer">
+<span class="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-20 pb-20 px-4">
+<!-- Welcome Section -->
+<section class="mb-6">
+<div class="flex justify-between items-center">
+<div>
+<h2 class="text-xl font-bold text-gray-800">Hi, Emma!</h2>
+<p class="text-gray-600 text-sm">Ready to explore science today?</p>
+</div>
+<div class="relative w-16 h-16">
+<svg class="progress-ring" width="64" height="64">
+<circle class="progress-ring-circle" stroke="#E6E6E6" stroke-width="6" fill="transparent" r="26" cx="32" cy="32"></circle>
+<circle class="progress-ring-circle" stroke="#FF6B35" stroke-width="6" fill="transparent" r="26" cx="32" cy="32" stroke-dashoffset="70"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-700">75%</div>
+</div>
+</div>
+</section>
+<!-- Daily Challenge -->
+<section class="mb-8">
+<div class="bg-gradient-to-r from-primary to-secondary rounded-lg p-4 text-white relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24">
+<img src="https://readdy.ai/api/search-image?query=cute%20cartoon%20rocket%20with%20stars%2C%20playful%20science%20theme%2C%20vibrant%20colors%2C%20digital%20illustration%2C%20transparent%20background&width=150&height=150&seq=rocket1&orientation=squarish"
+alt="Rocket"
+class="w-full h-full object-contain">
+</div>
+<h3 class="text-lg font-bold mb-1">Daily Challenge</h3>
+<p class="text-sm mb-3 max-w-[70%]">Complete today's experiment and earn a special badge!</p>
+<button class="bg-white text-primary px-4 py-2 rounded-button font-medium text-sm shadow-md cursor-pointer hover:bg-gray-100 transition-colors">Start Now</button>
+</div>
+</section>
+<!-- Learning Paths -->
+<section class="mb-8">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-lg font-bold text-gray-800">Learning Paths</h3>
+<a href="#" class="text-primary text-sm font-medium cursor-pointer">View All</a>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="bg-white rounded-lg overflow-hidden card-shadow cursor-pointer transform hover:scale-[1.02] transition-transform" onclick="startLesson('space')">
+<div class="h-28 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=colorful%20solar%20system%20planets%20for%20kids%2C%20educational%20illustration%2C%20vibrant%20colors%2C%20digital%20art%2C%20space%20science%2C%20child-friendly%20design%2C%20isolated%20on%20light%20blue%20background&width=200&height=150&seq=space1&orientation=landscape"
+alt="Space Exploration"
+class="w-full h-full object-cover">
+</div>
+<div class="p-3">
+<div class="flex justify-between items-center mb-1">
+<h4 class="font-bold text-gray-800">Space</h4>
+<div class="flex">
+<i class="ri-star-fill text-yellow-400 ri-xs"></i>
+<i class="ri-star-fill text-yellow-400 ri-xs"></i>
+<i class="ri-star-line text-gray-300 ri-xs"></i>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-gray-500">6 lessons</span>
+<span class="text-xs font-medium text-primary">60% done</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+<div class="bg-primary h-1.5 rounded-full" style="width: 60%"></div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white rounded-lg overflow-hidden card-shadow cursor-pointer transform hover:scale-[1.02] transition-transform">
+<div class="h-28 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=colorful%20illustration%20of%20plant%20growth%20cycle%20for%20kids%2C%20educational%20diagram%2C%20vibrant%20colors%2C%20digital%20art%2C%20botany%20science%2C%20child-friendly%20design%2C%20isolated%20on%20light%20green%20background&width=200&height=150&seq=plants1&orientation=landscape"
+alt="Plant Life"
+class="w-full h-full object-cover">
+</div>
+<div class="p-3">
+<div class="flex justify-between items-center mb-1">
+<h4 class="font-bold text-gray-800">Plants</h4>
+<div class="flex">
+<i class="ri-star-fill text-yellow-400 ri-xs"></i>
+<i class="ri-star-line text-gray-300 ri-xs"></i>
+<i class="ri-star-line text-gray-300 ri-xs"></i>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-gray-500">4 lessons</span>
+<span class="text-xs font-medium text-primary">25% done</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+<div class="bg-primary h-1.5 rounded-full" style="width: 25%"></div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white rounded-lg overflow-hidden card-shadow cursor-pointer transform hover:scale-[1.02] transition-transform">
+<div class="h-28 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=colorful%20water%20cycle%20diagram%20for%20kids%2C%20educational%20illustration%2C%20vibrant%20colors%2C%20digital%20art%2C%20weather%20science%2C%20child-friendly%20design%2C%20isolated%20on%20light%20blue%20background&width=200&height=150&seq=water1&orientation=landscape"
+alt="Water Cycle"
+class="w-full h-full object-cover">
+</div>
+<div class="p-3">
+<div class="flex justify-between items-center mb-1">
+<h4 class="font-bold text-gray-800">Water Cycle</h4>
+<div class="flex">
+<i class="ri-star-fill text-yellow-400 ri-xs"></i>
+<i class="ri-star-fill text-yellow-400 ri-xs"></i>
+<i class="ri-star-fill text-yellow-400 ri-xs"></i>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-gray-500">5 lessons</span>
+<span class="text-xs font-medium text-gray-500">New</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+<div class="bg-primary h-1.5 rounded-full" style="width: 0%"></div>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-white rounded-lg overflow-hidden card-shadow cursor-pointer transform hover:scale-[1.02] transition-transform">
+<div class="h-28 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=colorful%20animal%20classification%20chart%20for%20kids%2C%20educational%20illustration%2C%20vibrant%20colors%2C%20digital%20art%2C%20biology%20science%2C%20child-friendly%20design%2C%20isolated%20on%20light%20yellow%20background&width=200&height=150&seq=animals1&orientation=landscape"
+alt="Animal Kingdom"
+class="w-full h-full object-cover">
+</div>
+<div class="p-3">
+<div class="flex justify-between items-center mb-1">
+<h4 class="font-bold text-gray-800">Animals</h4>
+<div class="flex">
+<i class="ri-star-fill text-yellow-400 ri-xs"></i>
+<i class="ri-star-fill text-yellow-400 ri-xs"></i>
+<i class="ri-star-line text-gray-300 ri-xs"></i>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-gray-500">7 lessons</span>
+<span class="text-xs font-medium text-primary">80% done</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+<div class="bg-primary h-1.5 rounded-full" style="width: 80%"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Fun Experiments -->
+<section class="mb-8">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-lg font-bold text-gray-800">Fun Experiments</h3>
+<a href="#" class="text-primary text-sm font-medium cursor-pointer">View All</a>
+</div>
+<div class="overflow-x-auto pb-2 -mx-4 px-4">
+<div class="flex space-x-4" style="width: max-content;">
+<!-- Experiment 1 -->
+<div class="bg-white rounded-lg overflow-hidden card-shadow w-60 cursor-pointer">
+<div class="h-32 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=colorful%20volcano%20science%20experiment%20for%20kids%2C%20baking%20soda%20and%20vinegar%20reaction%2C%20educational%20illustration%2C%20vibrant%20colors%2C%20digital%20art%2C%20chemistry%20science%2C%20child-friendly%20design&width=240&height=160&seq=volcano1&orientation=landscape"
+alt="Volcano Experiment"
+class="w-full h-full object-cover">
+</div>
+<div class="p-3">
+<div class="flex items-center mb-2">
+<div class="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full">Easy</div>
+<div class="ml-2 text-xs text-gray-500">15 min</div>
+</div>
+<h4 class="font-bold text-gray-800 mb-1">Erupting Volcano</h4>
+<p class="text-xs text-gray-600 line-clamp-2">Create a colorful volcanic eruption using baking soda and vinegar!</p>
+</div>
+</div>
+<!-- Experiment 2 -->
+<div class="bg-white rounded-lg overflow-hidden card-shadow w-60 cursor-pointer">
+<div class="h-32 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=colorful%20rainbow%20in%20a%20jar%20density%20experiment%20for%20kids%2C%20educational%20illustration%2C%20vibrant%20colors%2C%20digital%20art%2C%20physics%20science%2C%20child-friendly%20design&width=240&height=160&seq=rainbow1&orientation=landscape"
+alt="Rainbow Experiment"
+class="w-full h-full object-cover">
+</div>
+<div class="p-3">
+<div class="flex items-center mb-2">
+<div class="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full">Medium</div>
+<div class="ml-2 text-xs text-gray-500">20 min</div>
+</div>
+<h4 class="font-bold text-gray-800 mb-1">Rainbow in a Jar</h4>
+<p class="text-xs text-gray-600 line-clamp-2">Learn about density by creating a beautiful layered rainbow in a jar!</p>
+</div>
+</div>
+<!-- Experiment 3 -->
+<div class="bg-white rounded-lg overflow-hidden card-shadow w-60 cursor-pointer">
+<div class="h-32 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=colorful%20slime%20making%20experiment%20for%20kids%2C%20educational%20illustration%2C%20vibrant%20colors%2C%20digital%20art%2C%20chemistry%20science%2C%20child-friendly%20design&width=240&height=160&seq=slime1&orientation=landscape"
+alt="Slime Experiment"
+class="w-full h-full object-cover">
+</div>
+<div class="p-3">
+<div class="flex items-center mb-2">
+<div class="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full">Easy</div>
+<div class="ml-2 text-xs text-gray-500">15 min</div>
+</div>
+<h4 class="font-bold text-gray-800 mb-1">Stretchy Slime</h4>
+<p class="text-xs text-gray-600 line-clamp-2">Make your own colorful slime and learn about polymers!</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Achievements -->
+<section class="mb-8">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-lg font-bold text-gray-800">Your Achievements</h3>
+<a href="#" class="text-primary text-sm font-medium cursor-pointer">View All</a>
+</div>
+<div class="bg-white rounded-lg p-4 card-shadow">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center">
+<div class="w-12 h-12 flex items-center justify-center bg-primary bg-opacity-10 rounded-full">
+<i class="ri-trophy-fill text-primary ri-lg"></i>
+</div>
+<div class="ml-3">
+<h4 class="font-bold text-gray-800">Science Explorer</h4>
+<p class="text-xs text-gray-600">Level 2</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs text-gray-600">Next level:</p>
+<p class="text-sm font-medium text-primary">300 XP needed</p>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<!-- Badge 1 -->
+<div class="flex flex-col items-center">
+<div class="w-14 h-14 rounded-full bg-yellow-100 flex items-center justify-center mb-1 relative">
+<img src="https://readdy.ai/api/search-image?query=cute%20cartoon%20badge%20icon%20with%20rocket%2C%20achievement%20symbol%20for%20kids%2C%20colorful%2C%20digital%20art%2C%20transparent%20background&width=80&height=80&seq=badge1&orientation=squarish"
+alt="Space Badge"
+class="w-10 h-10 object-contain">
+</div>
+<span class="text-xs text-center text-gray-700 whitespace-nowrap overflow-hidden text-overflow-ellipsis w-full">Space</span>
+</div>
+<!-- Badge 2 -->
+<div class="flex flex-col items-center">
+<div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mb-1">
+<img src="https://readdy.ai/api/search-image?query=cute%20cartoon%20badge%20icon%20with%20plant%2C%20achievement%20symbol%20for%20kids%2C%20colorful%2C%20digital%20art%2C%20transparent%20background&width=80&height=80&seq=badge2&orientation=squarish"
+alt="Plant Badge"
+class="w-10 h-10 object-contain">
+</div>
+<span class="text-xs text-center text-gray-700 whitespace-nowrap overflow-hidden text-overflow-ellipsis w-full">Plants</span>
+</div>
+<!-- Badge 3 -->
+<div class="flex flex-col items-center">
+<div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center mb-1 badge-glow">
+<img src="https://readdy.ai/api/search-image?query=cute%20cartoon%20badge%20icon%20with%20water%20droplet%2C%20achievement%20symbol%20for%20kids%2C%20colorful%2C%20digital%20art%2C%20transparent%20background&width=80&height=80&seq=badge3&orientation=squarish"
+alt="Water Badge"
+class="w-10 h-10 object-contain">
+<div class="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+<i class="ri-star-fill ri-xs"></i>
+</div>
+</div>
+<span class="text-xs text-center text-gray-700 whitespace-nowrap overflow-hidden text-overflow-ellipsis w-full">Water</span>
+</div>
+<!-- Badge 4 (Locked) -->
+<div class="flex flex-col items-center opacity-50">
+<div class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-1">
+<i class="ri-lock-line text-gray-400 ri-lg"></i>
+</div>
+<span class="text-xs text-center text-gray-500 whitespace-nowrap overflow-hidden text-overflow-ellipsis w-full">Animals</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Tab Bar -->
+<nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-10">
+<div class="grid grid-cols-4 h-16">
+<a href="#" class="flex flex-col items-center justify-center text-primary">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-home-5-fill ri-lg"></i>
+</div>
+<span class="text-xs mt-1">Home</span>
+</a>
+<a href="#" class="flex flex-col items-center justify-center text-gray-500 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-flask-line ri-lg"></i>
+</div>
+<span class="text-xs mt-1">Experiments</span>
+</a>
+<a href="#" class="flex flex-col items-center justify-center text-gray-500 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-medal-line ri-lg"></i>
+</div>
+<span class="text-xs mt-1">Achievements</span>
+</a>
+<a href="#" class="flex flex-col items-center justify-center text-gray-500 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-user-settings-line ri-lg"></i>
+</div>
+<span class="text-xs mt-1">Parent Zone</span>
+</a>
+</div>
+</nav>
+<!-- Floating Action Button -->
+<div class="fixed right-4 bottom-20 z-20">
+<button class="w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-primary-dark transition-colors">
+<i class="ri-microscope-fill text-white ri-xl"></i>
+</button>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+// Simulate progress animation
+const progressCircle = document.querySelector('.progress-ring-circle:nth-child(2)');
+const circumference = 2 * Math.PI * 26;
+progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+progressCircle.style.strokeDashoffset = circumference - (75 / 100) * circumference;
+// Learning game modal
+const gameModal = document.createElement('div');
+gameModal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 hidden';
+gameModal.innerHTML = `
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg w-[340px] max-h-[90vh] overflow-y-auto">
+<div class="p-4">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-xl font-bold text-gray-800" id="lessonTitle"></h3>
+<button onclick="closeLesson()" class="text-gray-500 hover:text-gray-700">
+<i class="ri-close-line ri-lg"></i>
+</button>
+</div>
+<div id="lessonContent" class="space-y-4"></div>
+</div>
+</div>
+`;
+document.body.appendChild(gameModal);
+// Learning content
+window.lessons = {
+space: {
+title: "Space Adventure",
+content: [
+{
+type: "quiz",
+question: "Which planet is closest to the Sun?",
+options: ["Mercury", "Venus", "Earth", "Mars"],
+correct: 0
+},
+{
+type: "matching",
+pairs: [
+["Sun", "Star"],
+["Earth", "Planet"],
+["Moon", "Satellite"],
+["Asteroid", "Rock"]
+]
+},
+{
+type: "interactive",
+title: "Solar System Explorer",
+description: "Drag the planets to their correct orbits!"
+}
+]
+}
+};
+// Start lesson function
+window.startLesson = function(topic) {
+const lesson = window.lessons[topic];
+if (!lesson) return;
+const modal = document.querySelector('.fixed.inset-0');
+const titleEl = document.getElementById('lessonTitle');
+const contentEl = document.getElementById('lessonContent');
+titleEl.textContent = lesson.title;
+contentEl.innerHTML = '';
+lesson.content.forEach((item, index) => {
+const section = document.createElement('div');
+section.className = 'bg-gray-50 rounded-lg p-4';
+switch(item.type) {
+case 'quiz':
+section.innerHTML = `
+<div class="mb-3 font-medium">${item.question}</div>
+<div class="space-y-2">
+${item.options.map((option, i) => `
+<button onclick="checkAnswer(${index}, ${i})" class="w-full text-left px-4 py-2 rounded-button bg-white border border-gray-200 hover:border-primary transition-colors">
+${option}
+</button>
+`).join('')}
+</div>
+`;
+break;
+case 'matching':
+section.innerHTML = `
+<div class="mb-3 font-medium">Match the pairs:</div>
+<div class="grid grid-cols-2 gap-2">
+${item.pairs.map(([term, definition], i) => `
+<div class="bg-white p-2 rounded-button text-center cursor-move" draggable="true" data-index="${i}">
+${term}
+</div>
+<div class="bg-gray-100 p-2 rounded-button text-center" data-target="${i}">
+${definition}
+</div>
+`).join('')}
+</div>
+`;
+break;
+case 'interactive':
+section.innerHTML = `
+<div class="text-center">
+<h4 class="font-medium mb-2">${item.title}</h4>
+<p class="text-sm text-gray-600 mb-4">${item.description}</p>
+<div class="bg-black bg-opacity-5 rounded-lg p-4 h-48 flex items-center justify-center">
+<div class="text-center">
+<i class="ri-planet-line ri-3x text-primary mb-2"></i>
+<p class="text-sm">Interactive content coming soon!</p>
+</div>
+</div>
+</div>
+`;
+break;
+}
+contentEl.appendChild(section);
+});
+modal.classList.remove('hidden');
+};
+// Close lesson function
+window.closeLesson = function() {
+document.querySelector('.fixed.inset-0').classList.add('hidden');
+};
+// Check answer function
+window.checkAnswer = function(questionIndex, selectedIndex) {
+const buttons = document.querySelectorAll(`#lessonContent > div:nth-child(${questionIndex + 1}) button`);
+buttons.forEach((button, index) => {
+if (index === selectedIndex) {
+if (index === window.lessons.space.content[questionIndex].correct) {
+button.classList.add('bg-green-50', 'border-green-500', 'text-green-700');
+} else {
+button.classList.add('bg-red-50', 'border-red-500', 'text-red-700');
+}
+}
+button.disabled = true;
+});
+};
+// Add click interactions
+const cards = document.querySelectorAll('.card-shadow');
+cards.forEach(card => {
+card.addEventListener('click', function() {
+this.classList.add('scale-[1.02]');
+setTimeout(() => {
+this.classList.remove('scale-[1.02]');
+}, 200);
+});
+});
+// Tab navigation
+const navItems = document.querySelectorAll('nav a');
+navItems.forEach(item => {
+item.addEventListener('click', function(e) {
+e.preventDefault();
+navItems.forEach(navItem => {
+navItem.classList.remove('text-primary');
+navItem.classList.add('text-gray-500');
+});
+this.classList.remove('text-gray-500');
+this.classList.add('text-primary');
+});
+});
+});
+</script>
+</body>
+</html>
