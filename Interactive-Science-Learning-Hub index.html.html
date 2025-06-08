@@ -304,7 +304,7 @@ class="w-10 h-10 rounded-full object-cover avatar-border cursor-pointer">
 </div>
 </header>
 <!-- Main Content -->
-<main class="pt-20 pb-20 px-4">
+<main class="flex-1 overflow-auto p-6"> == $0
 <!-- Welcome Section -->
 <section class="mb-6">
 <div class="flex justify-between items-center">
@@ -342,30 +342,421 @@ class="w-full h-full object-contain">
 </div>
 <div class="grid grid-cols-2 gap-4">
 <!-- Card 1 -->
-<div class="bg-white rounded-lg overflow-hidden card-shadow cursor-pointer transform hover:scale-[1.02] transition-transform" onclick="startLesson('space')">
-<div class="h-28 overflow-hidden">
-<img src="https://readdy.ai/api/search-image?query=colorful%20solar%20system%20planets%20for%20kids%2C%20educational%20illustration%2C%20vibrant%20colors%2C%20digital%20art%2C%20space%20science%2C%20child-friendly%20design%2C%20isolated%20on%20light%20blue%20background&width=200&height=150&seq=space1&orientation=landscape"
-alt="Space Exploration"
-class="w-full h-full object-cover">
-</div>
-<div class="p-3">
-<div class="flex justify-between items-center mb-1">
-<h4 class="font-bold text-gray-800">Space</h4>
-<div class="flex">
-<i class="ri-star-fill text-yellow-400 ri-xs"></i>
-<i class="ri-star-fill text-yellow-400 ri-xs"></i>
-<i class="ri-star-line text-gray-300 ri-xs"></i>
-</div>
-</div>
-<div class="flex justify-between items-center">
-<span class="text-xs text-gray-500">6 lessons</span>
-<span class="text-xs font-medium text-primary">60% done</span>
-</div>
-<div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-<div class="bg-primary h-1.5 rounded-full" style="width: 60%"></div>
-</div>
-</div>
-</div>
+ <!---Card-->
+  <!-- Lesson Card -->
+  <div
+    id="lessonCard"
+    class="bg-white rounded-lg overflow-hidden shadow-md cursor-pointer transform hover:scale-[1.02] transition-transform max-w-sm w-full card-shadow"
+    onclick="startLesson('space')"
+    aria-label="Open Space lesson"
+    role="button"
+    tabindex="0"
+  >
+    <div class="h-28 overflow-hidden">
+      <img src="https://readdy.ai/api/search-image?query=colorful%20solar%20system%20planets%20for%20kids%2C%20educational%20illustration%2C%20vibrant%20colors%2C%20digital%20art%2C%20space%20science%2C%20child-friendly%20design%2C%20isolated%20on%20light%20blue%20background&width=200&height=150&seq=space1&orientation=landscape"
+      alt="Space Exploration"
+        class="w-full h-full object-cover"
+      />
+    </div>
+    <div class="p-3">
+      <div class="flex justify-between items-center mb-1">
+        <h4 class="font-bold text-gray-800">Space</h4>
+        <div class="flex space-x-1">
+          <i class="ri-star-fill text-yellow-400 ri-xs"></i>
+          <i class="ri-star-fill text-yellow-400 ri-xs"></i>
+          <i class="ri-star-line text-gray-300 ri-xs"></i>
+        </div>
+      </div>
+      <div class="flex justify-between items-center text-xs text-gray-500">
+        <span>6 lessons</span>
+        <span id="progressText" class="font-medium text-blue-600">0% done</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+        <div id="progressBar" class="bg-blue-600 h-1.5 rounded-full progress-bar" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <div class="fixed right-4 bottom-20 z-20">
+    <button
+      class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-blue-700 transition-colors"
+      aria-label="Open microscope"
+    >
+      <i class="ri-microscope-fill text-white ri-xl"></i>
+    </button>
+  </div>
+
+  <!-- Lesson Modal -->
+  <div
+    class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden"
+    id="gameModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="lessonTitle"
+    tabindex="-1"
+  >
+    <div
+      class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg w-[340px] max-h-[90vh] overflow-y-auto p-4"
+    >
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-gray-800" id="lessonTitle"></h3>
+        <button
+          onclick="closeLesson()"
+          class="text-gray-500 hover:text-gray-700"
+          aria-label="Close lesson"
+        >
+          <i class="ri-close-line ri-lg"></i>
+        </button>
+      </div>
+      <div id="lessonContent" class="space-y-4"></div>
+    </div>
+  </div>
+
+
+<!---card 1 Scrip-->
+<script>
+
+// Utility: Shuffle array in place
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  window.lessons = {
+    space: {
+      title: "Space Adventure",
+      content: [
+        {
+          type: "quiz",
+          question: "Which planet is closest to the Sun?",
+          options: ["Mercury", "Venus", "Earth", "Mars"],
+          correct: 0,
+        },
+        {
+          type: "quiz",
+          question: "Which planet is known as the Red Planet?",
+          options: ["Jupiter", "Mars", "Saturn", "Venus"],
+          correct: 1,
+        },
+        {
+          type: "quiz",
+          question: "What is the largest planet in our solar system?",
+          options: ["Earth", "Saturn", "Jupiter", "Neptune"],
+          correct: 2,
+        },
+        {
+          type: "quiz",
+          question: "Which celestial body orbits the Earth?",
+          options: ["Moon", "Sun", "Mars", "Venus"],
+          correct: 0,
+        },
+        {
+          type: "quiz",
+          question: "What gas do plants use from the atmosphere?",
+          options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+          correct: 1,
+        },
+        {
+          type: "quiz",
+          question: "Which planet has famous rings around it?",
+          options: ["Jupiter", "Saturn", "Mars", "Venus"],
+          correct: 1,
+        },
+        {
+          type: "quiz",
+          question: "Which planet has famous rings around it?",
+          options: ["Jupiter", "Saturn", "Mars", "Venus"],
+          correct: 1,
+        },
+        {
+          type: "quiz",
+          question: "Which planet has famous rings around it?",
+          options: ["Jupiter", "Saturn", "Mars", "Venus"],
+          correct: 1,
+        },
+        {
+          type: "quiz",
+          question: "Which planet has famous rings around it?",
+          options: ["Jupiter", "Saturn", "Mars", "Venus"],
+          correct: 1,
+        },
+        {
+          type: "quiz",
+          question: "Which planet has famous rings around it?",
+          options: ["Jupiter", "Saturn", "Mars", "Venus"],
+          correct: 1,
+        },
+        {
+          type: "matching",
+          pairs: [
+            ["Sun", "Star"],
+            ["Earth", "Planet"],
+            ["Moon", "Satellite"],
+            ["Asteroid", "Rock"],
+          ],
+        }
+      ],
+    },
+  };
+
+  let progressCount = 0;
+  let totalItems = 0;
+  let currentQuizIndex = 0;
+  let lessonData = null;
+  let scrambledQuizzes = [];
+
+  function updateProgress() {
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    let percent = Math.round((progressCount / totalItems) * 100);
+    if (percent >= 100) {
+      percent = 100;
+      progressText.textContent = "Completed!";
+    } else {
+      progressText.textContent = percent + "% done";
+    }
+    progressBar.style.width = percent + "%";
+  }
+
+  function renderQuizQuestion(item, index) {
+    const contentEl = document.getElementById("lessonContent");
+    contentEl.innerHTML = "";
+
+    // Clone options with indexes, then shuffle
+    let optionsWithIndex = item.options.map((opt, i) => ({ text: opt, originalIndex: i }));
+    shuffleArray(optionsWithIndex);
+
+    const section = document.createElement("div");
+    section.className = "bg-gray-50 rounded-lg p-4";
+
+    section.innerHTML = `
+      <div class="mb-3 font-medium">${item.question}</div>
+      <div class="space-y-2">
+        ${optionsWithIndex
+          .map(
+            (optionObj, i) => `
+          <button
+            onclick="checkAnswerSequential(${index}, ${optionObj.originalIndex})"
+            class="w-full text-left px-4 py-2 rounded bg-white border border-gray-200 hover:border-blue-600 transition-colors"
+            type="button"
+          >
+            ${optionObj.text}
+          </button>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+
+    contentEl.appendChild(section);
+  }
+
+  function renderMatching(item) {
+    const contentEl = document.getElementById("lessonContent");
+    contentEl.innerHTML = "";
+
+    const section = document.createElement("div");
+    section.className = "bg-gray-50 rounded-lg p-4";
+
+    section.innerHTML = `
+      <div class="mb-3 font-medium">Match the pairs:</div>
+      <div class="grid grid-cols-2 gap-2 select-none">
+        ${item.pairs
+          .map(
+            ([term, definition], i) => `
+          <div
+            class="bg-white p-2 rounded text-center cursor-move border border-gray-300"
+            draggable="true"
+            data-index="${i}"
+            aria-grabbed="false"
+            role="listitem"
+          >
+            ${term}
+          </div>
+          <div
+            class="bg-gray-100 p-2 rounded text-center border border-gray-300"
+            data-target="${i}"
+            role="listitem"
+            tabindex="0"
+            aria-dropeffect="none"
+          >
+            ${definition}
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+
+    contentEl.appendChild(section);
+    enableMatchingDragDrop();
+  }
+
+  window.startLesson = function (topic) {
+    lessonData = window.lessons[topic];
+    if (!lessonData) return;
+
+    progressCount = 0;
+    currentQuizIndex = 0;
+
+    // Scramble quiz questions order
+    const quizItems = lessonData.content.filter(i => i.type === "quiz");
+    scrambledQuizzes = shuffleArray(quizItems.map((q, idx) => ({ ...q, origIndex: idx })));
+
+    // Count total quiz + matching pairs
+    totalItems = scrambledQuizzes.length;
+    const matchingItem = lessonData.content.find(i => i.type === "matching");
+    if (matchingItem) totalItems += matchingItem.pairs.length;
+
+    updateProgress();
+
+    const modal = document.getElementById("gameModal");
+    const titleEl = document.getElementById("lessonTitle");
+
+    titleEl.textContent = lessonData.title;
+    modal.classList.remove("hidden");
+
+    showNextContent();
+  };
+
+  function showNextContent() {
+    if (!lessonData) return;
+
+    if (currentQuizIndex < scrambledQuizzes.length) {
+      // Render quiz from scrambled array
+      const quizItem = scrambledQuizzes[currentQuizIndex];
+      renderQuizQuestion(quizItem, quizItem.origIndex);
+      return;
+    }
+
+    const matchingItem = lessonData.content.find((i) => i.type === "matching");
+    if (matchingItem && !matchingItem.completed) {
+      renderMatching(matchingItem);
+      return;
+    }
+
+    const contentEl = document.getElementById("lessonContent");
+    contentEl.innerHTML = `<div class="text-center text-lg font-semibold text-green-600">All done! 🎉</div>`;
+  }
+
+  window.checkAnswerSequential = function (questionIndex, selectedIndex) {
+    const buttons = document.querySelectorAll(`#lessonContent button`);
+    buttons.forEach((button, index) => {
+      if (index === selectedIndex) {
+        if (index === questionIndex) {
+          button.classList.add("bg-green-50", "border-green-500", "text-green-700");
+          progressCount++;
+          updateProgress();
+        } else {
+          button.classList.add("bg-red-50", "border-red-500", "text-red-700");
+        }
+      }
+      button.disabled = true;
+    });
+
+    setTimeout(() => {
+      currentQuizIndex++;
+      showNextContent();
+    }, 1000);
+  };
+
+  function enableMatchingDragDrop() {
+    const draggableItems = document.querySelectorAll(
+      '#lessonContent [draggable="true"]'
+    );
+    const dropZones = document.querySelectorAll('#lessonContent [data-target]');
+    let draggedIndex = null;
+
+    draggableItems.forEach((item) => {
+      item.addEventListener("dragstart", (e) => {
+        draggedIndex = e.target.dataset.index;
+        e.dataTransfer.setData("text/plain", draggedIndex);
+        e.target.setAttribute("aria-grabbed", "true");
+      });
+
+      item.addEventListener("dragend", (e) => {
+        e.target.setAttribute("aria-grabbed", "false");
+      });
+    });
+
+    dropZones.forEach((zone) => {
+      zone.addEventListener("dragover", (e) => e.preventDefault());
+
+      zone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const targetIndex = zone.dataset.target;
+        const draggedIndexData = e.dataTransfer.getData("text/plain");
+
+        if (zone.classList.contains("matched")) return;
+
+        const draggedElem = Array.from(draggableItems).find(
+          (el) => el.dataset.index === draggedIndexData
+        );
+        if (!draggedElem) return;
+
+        if (draggedIndexData === targetIndex) {
+          zone.classList.add(
+            "matched",
+            "bg-green-100",
+            "border",
+            "border-green-400",
+            "text-green-700",
+            "font-semibold"
+          );
+          draggedElem.classList.add("opacity-50", "cursor-default");
+          draggedElem.setAttribute("draggable", "false");
+          zone.textContent = draggedElem.textContent;
+          draggedElem.style.display = "none";
+
+          progressCount++;
+          updateProgress();
+
+          const matchingItem = lessonData.content.find((i) => i.type === "matching");
+          if (
+            matchingItem &&
+            document.querySelectorAll("#lessonContent .matched").length >= matchingItem.pairs.length
+          ) {
+            matchingItem.completed = true;
+            setTimeout(showNextContent, 800);
+          }
+        } else {
+          zone.classList.add(
+            "bg-red-100",
+            "border",
+            "border-red-400",
+            "text-red-700",
+            "font-semibold"
+          );
+          setTimeout(() => {
+            zone.classList.remove(
+              "bg-red-100",
+              "border-red-400",
+              "text-red-700",
+              "font-semibold"
+            );
+          }, 600);
+        }
+      });
+    });
+  }
+
+  document.getElementById("gameModal").addEventListener("click", function (e) {
+    if (e.target === this) {
+      closeLesson();
+    }
+  });
+
+  window.closeLesson = function () {
+    document.getElementById("gameModal").classList.add("hidden");
+  };
+
+</script>
+
+
 <!-- Card 2 -->
 <div class="bg-white rounded-lg overflow-hidden card-shadow cursor-pointer transform hover:scale-[1.02] transition-transform">
 <div class="h-28 overflow-hidden">
@@ -595,165 +986,18 @@ class="w-10 h-10 object-contain">
 </a>
 </div>
 </nav>
+
+
 <!-- Floating Action Button -->
 <div class="fixed right-4 bottom-20 z-20">
 <button class="w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-primary-dark transition-colors">
 <i class="ri-microscope-fill text-white ri-xl"></i>
 </button>
 </div>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-// Simulate progress animation
-const progressCircle = document.querySelector('.progress-ring-circle:nth-child(2)');
-const circumference = 2 * Math.PI * 26;
-progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-progressCircle.style.strokeDashoffset = circumference - (75 / 100) * circumference;
-// Learning game modal
-const gameModal = document.createElement('div');
-gameModal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 hidden';
-gameModal.innerHTML = `
-<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg w-[340px] max-h-[90vh] overflow-y-auto">
-<div class="p-4">
-<div class="flex justify-between items-center mb-4">
-<h3 class="text-xl font-bold text-gray-800" id="lessonTitle"></h3>
-<button onclick="closeLesson()" class="text-gray-500 hover:text-gray-700">
-<i class="ri-close-line ri-lg"></i>
-</button>
-</div>
-<div id="lessonContent" class="space-y-4"></div>
-</div>
-</div>
-`;
-document.body.appendChild(gameModal);
-// Learning content
-window.lessons = {
-space: {
-title: "Space Adventure",
-content: [
-{
-type: "quiz",
-question: "Which planet is closest to the Sun?",
-options: ["Mercury", "Venus", "Earth", "Mars"],
-correct: 0
-},
-{
-type: "matching",
-pairs: [
-["Sun", "Star"],
-["Earth", "Planet"],
-["Moon", "Satellite"],
-["Asteroid", "Rock"]
-]
-},
-{
-type: "interactive",
-title: "Solar System Explorer",
-description: "Drag the planets to their correct orbits!"
-}
-]
-}
-};
-// Start lesson function
-window.startLesson = function(topic) {
-const lesson = window.lessons[topic];
-if (!lesson) return;
-const modal = document.querySelector('.fixed.inset-0');
-const titleEl = document.getElementById('lessonTitle');
-const contentEl = document.getElementById('lessonContent');
-titleEl.textContent = lesson.title;
-contentEl.innerHTML = '';
-lesson.content.forEach((item, index) => {
-const section = document.createElement('div');
-section.className = 'bg-gray-50 rounded-lg p-4';
-switch(item.type) {
-case 'quiz':
-section.innerHTML = `
-<div class="mb-3 font-medium">${item.question}</div>
-<div class="space-y-2">
-${item.options.map((option, i) => `
-<button onclick="checkAnswer(${index}, ${i})" class="w-full text-left px-4 py-2 rounded-button bg-white border border-gray-200 hover:border-primary transition-colors">
-${option}
-</button>
-`).join('')}
-</div>
-`;
-break;
-case 'matching':
-section.innerHTML = `
-<div class="mb-3 font-medium">Match the pairs:</div>
-<div class="grid grid-cols-2 gap-2">
-${item.pairs.map(([term, definition], i) => `
-<div class="bg-white p-2 rounded-button text-center cursor-move" draggable="true" data-index="${i}">
-${term}
-</div>
-<div class="bg-gray-100 p-2 rounded-button text-center" data-target="${i}">
-${definition}
-</div>
-`).join('')}
-</div>
-`;
-break;
-case 'interactive':
-section.innerHTML = `
-<div class="text-center">
-<h4 class="font-medium mb-2">${item.title}</h4>
-<p class="text-sm text-gray-600 mb-4">${item.description}</p>
-<div class="bg-black bg-opacity-5 rounded-lg p-4 h-48 flex items-center justify-center">
-<div class="text-center">
-<i class="ri-planet-line ri-3x text-primary mb-2"></i>
-<p class="text-sm">Interactive content coming soon!</p>
-</div>
-</div>
-</div>
-`;
-break;
-}
-contentEl.appendChild(section);
-});
-modal.classList.remove('hidden');
-};
-// Close lesson function
-window.closeLesson = function() {
-document.querySelector('.fixed.inset-0').classList.add('hidden');
-};
-// Check answer function
-window.checkAnswer = function(questionIndex, selectedIndex) {
-const buttons = document.querySelectorAll(`#lessonContent > div:nth-child(${questionIndex + 1}) button`);
-buttons.forEach((button, index) => {
-if (index === selectedIndex) {
-if (index === window.lessons.space.content[questionIndex].correct) {
-button.classList.add('bg-green-50', 'border-green-500', 'text-green-700');
-} else {
-button.classList.add('bg-red-50', 'border-red-500', 'text-red-700');
-}
-}
-button.disabled = true;
-});
-};
-// Add click interactions
-const cards = document.querySelectorAll('.card-shadow');
-cards.forEach(card => {
-card.addEventListener('click', function() {
-this.classList.add('scale-[1.02]');
-setTimeout(() => {
-this.classList.remove('scale-[1.02]');
-}, 200);
-});
-});
-// Tab navigation
-const navItems = document.querySelectorAll('nav a');
-navItems.forEach(item => {
-item.addEventListener('click', function(e) {
-e.preventDefault();
-navItems.forEach(navItem => {
-navItem.classList.remove('text-primary');
-navItem.classList.add('text-gray-500');
-});
-this.classList.remove('text-gray-500');
-this.classList.add('text-primary');
-});
-});
-});
+
+
 </script>
 </body>
 </html>
