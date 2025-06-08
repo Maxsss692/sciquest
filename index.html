@@ -22,6 +22,7 @@ max-width: 375px;
 margin: 0 auto;
 min-height: 100vh;
 position: relative;
+overflow: auto;
 }
 .welcome-bg {
 background: linear-gradient(135deg, rgba(255,107,53,0.1) 0%, rgba(78,205,196,0.1) 100%);
@@ -61,7 +62,7 @@ z-index: 1000;
 </head>
 <body>
 <!-- Welcome Page -->
-<div id="welcomePage" class="min-h-screen welcome-bg flex flex-col items-center justify-center px-6 py-12">
+<div id="welcomePage" class="min-h-screen welcome-bg flex flex-col items-center justify-center px-6 py-12" >
 <div class="text-center mb-8">
 <h1 class="text-3xl font-['Pacifico'] text-primary mb-1">SciQuest</h1>
 <p class="text-sm text-gray-600">Learn & Play Science</p>
@@ -304,12 +305,14 @@ class="w-10 h-10 rounded-full object-cover avatar-border cursor-pointer">
 </div>
 </header>
 <!-- Main Content -->
-<main class="flex-1 overflow-auto p-6"> == $0
+<main class="flex-1 overflow-auto pt-16 pb-8">
 <!-- Welcome Section -->
-<section class="mb-6">
-<div class="flex justify-between items-center">
+<section class="mb-6 overflow-auto">
+
+<div class="flex justify-between  items-center ">
 <div>
-<h2 id="greeting" class="text-xl font-bold text-gray-800">Hi,!</h2>
+<h2 id="greeting" class="text-xl font-bold text-gray-800">Hi,!Please Refresh</h2>
+
 <p class="text-gray-600 text-sm">Ready to explore science today?</p>
 </div>
 <div class="relative w-16 h-16">
@@ -317,7 +320,8 @@ class="w-10 h-10 rounded-full object-cover avatar-border cursor-pointer">
 <circle class="progress-ring-circle" stroke="#E6E6E6" stroke-width="6" fill="transparent" r="26" cx="32" cy="32"></circle>
 <circle class="progress-ring-circle" stroke="#FF6B35" stroke-width="6" fill="transparent" r="26" cx="32" cy="32" stroke-dashoffset="70"></circle>
 </svg>
-<div class="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-700">75%</div>
+
+<div class="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-700">10%</div>
 </div>
 </div>
 </section>
@@ -898,6 +902,7 @@ class="w-full h-full object-cover">
 <div class="flex justify-between items-center mb-4">
 <h3 class="text-lg font-bold text-gray-800">Your Achievements</h3>
 <a href="#" class="text-primary text-sm font-medium cursor-pointer">View All</a>
+
 </div>
 <div class="bg-white rounded-lg p-4 card-shadow">
 <div class="flex items-center justify-between mb-4">
@@ -956,36 +961,41 @@ class="w-10 h-10 object-contain">
 </div>
 </div>
 </section>
-</main>
+
+
+
 <!-- Bottom Tab Bar -->
-<nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-10">
-<div class="grid grid-cols-4 h-16">
-<a href="#" class="flex flex-col items-center justify-center text-primary">
-<div class="w-6 h-6 flex items-center justify-center">
-<i class="ri-home-5-fill ri-lg"></i>
-</div>
-<span class="text-xs mt-1">Home</span>
-</a>
-<a href="#" class="flex flex-col items-center justify-center text-gray-500 cursor-pointer">
-<div class="w-6 h-6 flex items-center justify-center">
-<i class="ri-flask-line ri-lg"></i>
-</div>
-<span class="text-xs mt-1">Experiments</span>
-</a>
-<a href="#" class="flex flex-col items-center justify-center text-gray-500 cursor-pointer">
-<div class="w-6 h-6 flex items-center justify-center">
-<i class="ri-medal-line ri-lg"></i>
-</div>
-<span class="text-xs mt-1">Achievements</span>
-</a>
-<a href="#" class="flex flex-col items-center justify-center text-gray-500 cursor-pointer">
-<div class="w-6 h-6 flex items-center justify-center">
-<i class="ri-user-settings-line ri-lg"></i>
-</div>
-<span class="text-xs mt-1">Parent Zone</span>
-</a>
-</div>
-</nav>
+<nav class=" bottom-0 w-full bg-white border-t border-gray-200 z-10">
+  <div class="grid grid-cols-4 h-16">
+  <a href="#" class="flex flex-col items-center justify-center text-primary">
+  <div class="w-6 h-6 flex items-center justify-center">
+  <i class="ri-home-5-fill ri-lg"></i>
+  </div>
+  <span class="text-xs mt-1">Home</span>
+  </a>
+  <a href="#" class="flex flex-col items-center justify-center text-gray-500 cursor-pointer">
+  <div class="w-6 h-6 flex items-center justify-center">
+  <i class="ri-flask-line ri-lg"></i>
+  </div>
+  <span class="text-xs mt-1">Experiments</span>
+  </a>
+  <a href="#" class="flex flex-col items-center justify-center text-gray-500 cursor-pointer">
+  <div class="w-6 h-6 flex items-center justify-center">
+  <i class="ri-medal-line ri-lg"></i>
+  </div>
+  <span class="text-xs mt-1">Achievements</span>
+  </a>
+  <a href="#" class="flex flex-col items-center justify-center text-gray-500 cursor-pointer">
+  <div class="w-6 h-6 flex items-center justify-center">
+  <i class="ri-user-settings-line ri-lg"></i>
+  </div>
+  <span class="text-xs mt-1">Parent Zone</span>
+  </a>
+  </div>
+  </nav>
+</main>
+
+
 
 
 <!-- Floating Action Button -->
